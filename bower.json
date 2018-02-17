@@ -1,0 +1,20 @@
+{
+  "name": "crypto-price",
+  "homepage": "https://github.com/mrancys/crypto-price",
+  "authors": [
+    "Martynas Rancys"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/Polymer#^2.0.0"
+  }
+}
