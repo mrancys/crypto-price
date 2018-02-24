@@ -1,12 +1,56 @@
 <link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="crypto-price">
     <template>
-        <h2>Hello world</h2>
+        <iron-ajax id="coinbase" handle-response="json" on-response="_handleResponse"></iron-ajax>
     </template>
     <script>
         class CryptoPrice extends Polymer.Element {
             static get is() { return 'crypto-price' }
+
+            static get properties() {
+                return {
+                    currencies: {
+                        type: Array,
+                        value: [
+                            {
+                                code: 'BTC',
+                                name: 'Bitcoin'
+                            },
+                            {
+                                code: 'ETH',
+                                name: 'Etherium'
+                            },
+                            {
+                                code: 'LTC',
+                                name: 'Litecoin'
+                            }
+                        ]
+                    }
+                };
+            }
+
+            ready() {
+                super.ready();
+                Polymer.RenderStatus.afterNextRender(this, function(){
+                    this._getCurrencyData();
+                })
+            }
+
+            _getCurrencyData() {
+                var ajax = this.$.coinbase;
+                var currencies = this.currencies;
+
+                currencies.forEach(element => {
+                   ajax.url = `https://www.coinbase.com/api/v2/prices/${element.code}-USD/spot`;
+                   ajax.generateRequest();
+                }, this);
+            }
+
+            _handleResponse(response) {
+                console.log(response);
+            }
         }
         window.customElements.define(CryptoPrice.is, CryptoPrice)
     </script>
