@@ -3,6 +3,7 @@
 <link rel="import" href="./bower_components/paper-spinner/paper-spinner-lite.html">
 
 <script src="./bower_components/chart.js/dist/Chart.js"></script>
+<script src="./bower_components/moment/min/moment.min.js"></script>
 <dom-module id="crypto-price">
     <template>
         <iron-ajax id="coinbase" headers='{"CB-VERSION":"2015-04-08"}' handle-response="json" on-response="_handleResponse" loading="{{loading}}"></iron-ajax>
@@ -102,10 +103,17 @@
                 let price = [];
 
                 data.response.data.prices.forEach(function (element) {
-                    label.push(element.time);
+                    label.push(this._computeDateTime(element.time));
                     price.push(element.price);
                 }, this);
                 this._generateLineChart(label, price, code);
+            }
+
+            _computeDateTime(date){
+                if (date){
+                    return moment(date, "YYYY-MM-DDThh:mm:aaZ").format('M/DD/YYYY h:mm a');
+                }
+                return date;
             }
 
             _generateLineChart(label, price, labelName) {
