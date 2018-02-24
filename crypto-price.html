@@ -2,18 +2,45 @@
 <link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="./bower_components/paper-button/paper-button.html">
+<link rel="import" href="./bower_components/paper-styles/typography.html">
+<link rel="import" href="./bower_components/iron-flex-layout/iron-flex-layout.html">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 <script src="./bower_components/chart.js/dist/Chart.js"></script>
 <script src="./bower_components/moment/min/moment.min.js"></script>
 <dom-module id="crypto-price">
     <template>
+        <style>
+            :host {
+                display: block;
+                font-family: 'Roboto';
+                --paper-cryptocurrency-primary-text-color: #0667D0;
+            }
+            h2 {
+                color: #0667D0;
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+            a {
+                color: #0667D0;
+            }
+            paper-button{
+                color: #0667D0;
+            }
+            .currencies {
+                display: inline;
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+        </style>
+        <h2>Crypto currency dashboard</h2>
         <iron-ajax id="coinbase" headers='{"CB-VERSION":"2015-04-08"}' handle-response="json" on-response="_handleResponse" loading="{{loading}}"></iron-ajax>
 
         <paper-spinner-lite active$="[[loading]]" alt="Loading currencies..."></paper-spinner-lite>
 
-        <div hidden$="[[loading]]">
+        <div hidden$="[[loading]]" class="currencies">
             <template is="dom-repeat" items="[[currencies]]">
-                <paper-button noink on-click="_getCurrencyHistoricalData" data-item$="[[item.code]]">[[item.name]] - $[[item.price]]</paper-button>
+                <paper-button class="paper-font-button" noink on-click="_getCurrencyHistoricalData" data-item$="[[item.code]]">[[item.name]] - $[[item.price]]</paper-button>
             </template>
         </div>
 
