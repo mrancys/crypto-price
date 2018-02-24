@@ -3,7 +3,10 @@
 
 <dom-module id="crypto-price">
     <template>
-        <iron-ajax id="coinbase" handle-response="json" on-response="_handleResponse"></iron-ajax>
+        <iron-ajax id="coinbase" headers='{"CB-VERSION":"2015-04-08"}' handle-response="json" on-response="_handleResponse"></iron-ajax>
+        <p>[[currencies.0.code]] - [[currencies.0.name]] - [[currencies.0.price]]</p>
+        <p>[[currencies.1.code]] - [[currencies.1.name]] - [[currencies.1.price]]</p>
+        <p>[[currencies.2.code]] - [[currencies.2.name]] - [[currencies.2.price]]</p>
     </template>
     <script>
         class CryptoPrice extends Polymer.Element {
@@ -33,7 +36,7 @@
 
             ready() {
                 super.ready();
-                Polymer.RenderStatus.afterNextRender(this, function(){
+                Polymer.RenderStatus.afterNextRender(this, function () {
                     this._getCurrencyData();
                 })
             }
@@ -43,13 +46,21 @@
                 var currencies = this.currencies;
 
                 currencies.forEach(element => {
-                   ajax.url = `https://www.coinbase.com/api/v2/prices/${element.code}-USD/spot`;
-                   ajax.generateRequest();
+                    ajax.url = `https://www.coinbase.com/api/v2/prices/${element.code}-USD/spot`;
+                    ajax.generateRequest();
                 }, this);
             }
 
             _handleResponse(response) {
-                console.log(response);
+                this._computeCurrencyPrice(response.detail);
+            }
+
+            _computeCurrencyPrice(data) {
+                let lastIndex = data.url.indexOf("-USD");
+                let firstIndex = lastIndex - 3;
+                let code = data.url.substring(firstIndex, lastIndex);
+                let index = this.currencies.map(e => e.code).indexOf(code);
+                this.set(`currencies.${index}.price`, data.response.data.amount);
             }
         }
         window.customElements.define(CryptoPrice.is, CryptoPrice)
